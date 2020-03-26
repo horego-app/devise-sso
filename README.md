@@ -9,20 +9,59 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'devise-sso'
+gem 'devise'
+gem 'devise-sso', github: 'printerous/devise-sso'
 ```
 
 And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install devise-sso
-
 ## Usage
 
-TODO: Write usage instructions here
+## Setup Sso Server
+
+```ruby
+# config/routes.rb
+devise_for :users, path: 'sso', path_names: {
+  sign_in: 'sessions/login',
+  sign_out: 'sessions/logout'
+}, controllers: {
+  sessions: 'devise/sso/sessions'
+}
+
+devise_scope :user do
+  post 'sso/authenticate', to: 'devise/sso/authentications#create'
+end
+
+# Model
+class User < ApplicationRecord
+  devise :sso_server
+end
+
+# Controller
+class ApplicationController < ActionController::Base
+  private
+
+  def after_sign_in_path_for(resource)
+    request.env['omniauth.origin'] || session.delete(:sso_redirect) || stored_location_for(resource)
+  end
+end
+```
+
+## Setup Sso Client
+
+```ruby
+# Controller
+before_action :authenticate_sso!
+
+# ENV
+SSO_HOST=sso.lvh.me
+SSO_PORT=3000
+SSO_LOGIN_PATH=/sso/sessions/login
+SSO_AUTH_PATH=/sso/authenticate
+SSO_SHARED_DOMAIN='.lvh.me'
+```
 
 ## Development
 
