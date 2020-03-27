@@ -28,7 +28,7 @@ module Devise
       end
 
       def valid_data
-        data = { id: resource.id }
+        data = resource
         data = resource.sso_data if defined?(resource.sso_data)
 
         {

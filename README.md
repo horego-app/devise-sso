@@ -37,6 +37,15 @@ end
 # Model
 class User < ApplicationRecord
   devise :sso_server
+
+  # override sso-server authentication response
+  def sso_data
+    {
+      id: id,
+      email: email,
+      name: name
+    }
+  end
 end
 
 # Controller
