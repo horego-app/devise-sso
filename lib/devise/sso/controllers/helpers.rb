@@ -6,7 +6,12 @@ module Devise
       # Those helpers are convenience methods added to ApplicationController.
       module Helpers
         def authenticate_sso!
-          redirect_to sso_login_url unless sso_resource_signed_in?
+          return if sso_resource_signed_in?
+
+          respond_to do |format|
+            format.html { redirect_to sso_login_url }
+            format.js { render js: "window.location.href='#{sso_login_url}';" }
+          end
         end
 
         def sso_resource_signed_in?
