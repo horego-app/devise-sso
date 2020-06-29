@@ -31,6 +31,14 @@ module Devise
         def sso_redirect_location
           session[:sso_redirect] || request.url
         end
+
+        def sso_logout_url
+          Devise::Sso::UrlBuilder.new(
+            host: ENV.fetch('SSO_HOST'),
+            port: ENV.fetch('SSO_PORT'),
+            path: ENV.fetch('SSO_LOGOUT_PATH', 'sso/sessions/logout')
+          ).to_s
+        end
       end
     end
   end

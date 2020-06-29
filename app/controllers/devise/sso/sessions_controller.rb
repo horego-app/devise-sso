@@ -4,6 +4,8 @@ module Devise
   module Sso
     class SessionsController < Devise::SessionsController
       before_action :sso_store_location!, only: [:new]
+      skip_before_action :verify_authenticity_token, only: [:destroy]
+      before_action :validate_sso_domain, only: [:destroy]
 
       def create
         super do |resource|
@@ -24,6 +26,16 @@ module Devise
       end
 
       private
+
+      def validate_sso_domain
+        return if ['.', request.domain].join.casecmp(ENV.fetch('SSO_SHARED_DOMAIN', '.lvh.me'))
+
+        redirect_location = request.referer || '/'
+        respond_to do |format|
+          format.html { redirect_back(fallback_location: redirect_location) }
+          format.js { render js: "window.location.href='#{redirect_location}';" }
+        end
+      end
 
       def sso_store_location!
         redirect_url = params.delete(:sso_redirect)
