@@ -27,6 +27,12 @@ module Devise
 
       private
 
+      def verify_signed_out_user
+        return if sso_resource_signed_in?
+
+        super
+      end
+
       def validate_sso_domain
         return if ['.', request.domain].join.casecmp(ENV.fetch('SSO_SHARED_DOMAIN', '.lvh.me'))
 
