@@ -18,6 +18,8 @@ module Devise
 
         res  = call_sso_server
         data = JSON.parse(res.body)['data'] || {}
+        return if data.blank?
+
         OpenStruct.new(data)
       end
 
