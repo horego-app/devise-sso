@@ -33,6 +33,12 @@ module Devise
         super
       end
 
+      def require_no_authentication
+        return unless sso_resource_signed_in?
+
+        super
+      end
+
       def validate_sso_domain
         return if ['.', request.domain].join.casecmp(ENV.fetch('SSO_SHARED_DOMAIN', '.lvh.me'))
 
