@@ -15,11 +15,13 @@ end
 require 'devise/sso/rails'
 require 'devise/sso/controllers/helpers'
 require 'devise/sso/authentication'
+require 'devise/sso/authentication_token'
 require 'devise/sso/validator'
 
 Devise.with_options model: true do |d|
   routes = %i[new create destroy]
   d.add_module :sso_server, controller: 'devise/sso/sessions', route: { session: routes }
+  d.add_module :sso_multi_device
 end
 
 ActiveSupport.on_load(:action_controller) do

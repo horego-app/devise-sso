@@ -9,7 +9,7 @@ module Devise
 
       def create
         super do |resource|
-          resource.generate_authentication_token!
+          resource.generate_authentication_token!(request)
           store_session_token!(resource)
         end
       end
@@ -19,7 +19,7 @@ module Devise
 
         super do
           resource = resource_class.find_by(authentication_token: token)
-          resource&.reset_authentication_token!
+          resource&.reset_authentication_token!(request)
 
           remove_session_token!
         end
@@ -55,8 +55,8 @@ module Devise
       end
 
       def store_session_token!(resource)
-        session[Devise::Sso.session_key] = resource.authentication_token
-        cookies[Devise::Sso.session_key] = { value: resource.authentication_token, domain: ENV.fetch('SSO_SHARED_DOMAIN', '.lvh.me') }
+        session[Devise::Sso.session_key] = resource.authentication_token(request)
+        cookies[Devise::Sso.session_key] = { value: resource.authentication_token(request), domain: ENV.fetch('SSO_SHARED_DOMAIN', '.lvh.me') }
       end
 
       def remove_session_token!

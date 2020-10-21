@@ -18,7 +18,11 @@ module Devise
       end
 
       def resource
-        @resource ||= @resource_class.find_by(authentication_token: @token)
+        @resource ||= if @resource_class.enable_multi_devices?
+                        Devise::Sso::AuthenticationToken.actives.find_by(token: @token).resource
+                      else
+                        @resource_class.find_by(authentication_token: @token)
+                      end
       end
 
       private
