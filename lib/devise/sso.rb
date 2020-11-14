@@ -7,7 +7,10 @@ module Devise
     class Error < StandardError; end
 
     def self.session_key
-      :devise_sso_token
+      sufix = nil
+      sufix = Rails.env if defined?(Rails)
+
+      [:devise_sso_token, sufix].join('_')
     end
   end
 end
