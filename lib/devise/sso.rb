@@ -7,6 +7,10 @@ module Devise
     class Error < StandardError; end
 
     def self.session_key
+      ENV['SSO_SESSION_KEY'] || default_session_key
+    end
+
+    def self.default_session_key
       sufix = nil
       sufix = Rails.env if defined?(Rails)
 
