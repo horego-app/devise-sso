@@ -19,7 +19,7 @@ module Devise
       end
 
       def generate_multi_device_tokens!(request)
-        auth_token = authentication_tokens.find_or_initialize_by(session_id: request.session.id)
+        auth_token = authentication_tokens.actives.find_or_initialize_by(session_id: request.session.id)
         auth_token.ip_address  = request.remote_ip
         auth_token.user_agent  = request.user_agent
         auth_token.token       = generate_authentication_token

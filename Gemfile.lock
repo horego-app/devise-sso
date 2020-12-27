@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    devise-sso (0.1.0)
+    devise-sso (0.1.9)
 
 GEM
   remote: https://rubygems.org/
