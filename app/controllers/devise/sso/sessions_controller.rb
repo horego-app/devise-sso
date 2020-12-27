@@ -4,7 +4,7 @@ module Devise
   module Sso
     class SessionsController < Devise::SessionsController
       before_action :sso_store_location!, only: [:new]
-      skip_before_action :verify_authenticity_token, only: [:destroy]
+      skip_before_action :verify_authenticity_token, only: [:destroy], raise: false
       before_action :validate_sso_domain, only: [:destroy]
 
       def create

@@ -19,6 +19,8 @@ module Devise
         end
 
         def current_sso_resource
+          return unless defined?(cookies)
+
           @current_sso_resource ||= Devise::Sso::Authentication.find(cookies[Devise::Sso.session_key])
         end
 
