@@ -3,7 +3,7 @@
 module Devise
   module Sso
     class AuthenticationsController < DeviseController
-      skip_before_action :verify_authenticity_token
+      skip_before_action :verify_authenticity_token, raise: false
 
       def create
         sso = Devise::Sso::Validator.new(resource_class, token)
