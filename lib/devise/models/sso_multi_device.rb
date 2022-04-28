@@ -15,11 +15,11 @@ module Devise
       end
 
       def multi_device_token(request)
-        authentication_tokens.actives.find_by(session_id: session_id)&.token
+        authentication_tokens.actives.find_by(session_id: request.session.id.to_s)&.token
       end
 
       def generate_multi_device_tokens!(request)
-        auth_token = authentication_tokens.actives.find_or_initialize_by(session_id: session_id)
+        auth_token = authentication_tokens.actives.find_or_initialize_by(session_id: request.session.id.to_s)
         auth_token.ip_address  = request.remote_ip
         auth_token.user_agent  = request.user_agent
         auth_token.token       = generate_authentication_token
@@ -29,7 +29,7 @@ module Devise
       end
 
       def reset_multi_device_tokens!(request)
-        auth_token = authentication_tokens.actives.find_by(session_id: session_id)
+        auth_token = authentication_tokens.actives.find_by(session_id: request.session.id.to_s)
         return if auth_token.blank?
 
         auth_token.inactivate!
@@ -37,10 +37,6 @@ module Devise
 
       def multi_device_token_valid?(token)
         authentication_tokens.find_by(token: token).nil?
-      end
-
-      def session_id
-        request.session.id.to_s
       end
     end
   end
